@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface IssueRepository extends CrudRepository<Issue, Integer> {
+    Iterable<Issue> findAllByPlaceContains(String place);
 }
