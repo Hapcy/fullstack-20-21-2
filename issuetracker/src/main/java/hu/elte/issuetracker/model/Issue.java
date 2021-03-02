@@ -58,6 +58,6 @@ public class Issue {
     @ManyToMany
     private List<Label> labels;
 
-    @OneToMany(mappedBy = "issue")
+    @OneToMany(mappedBy = "issue", cascade = CascadeType.REMOVE)
     private List<Message> messages;
 }
