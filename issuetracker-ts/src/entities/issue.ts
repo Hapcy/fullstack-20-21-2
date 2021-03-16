@@ -1,4 +1,12 @@
-import { Entity, Enum, PrimaryKey, Property } from '@mikro-orm/core';
+import {
+  Collection,
+  Entity,
+  Enum,
+  ManyToMany,
+  PrimaryKey,
+  Property,
+} from '@mikro-orm/core';
+import { Label } from './label';
 
 @Entity()
 export class Issue {
@@ -22,6 +30,9 @@ export class Issue {
 
   @Property({ onUpdate: () => new Date() })
   modifiedAt: Date = new Date();
+
+  @ManyToMany(() => Label, 'issues', { owner: true })
+  labels = new Collection<Label>(this);
 }
 
 export enum IssueStatus {
