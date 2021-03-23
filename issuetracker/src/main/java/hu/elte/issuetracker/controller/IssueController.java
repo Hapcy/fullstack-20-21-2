@@ -3,16 +3,22 @@ package hu.elte.issuetracker.controller;
 import hu.elte.issuetracker.model.Issue;
 import hu.elte.issuetracker.model.Label;
 import hu.elte.issuetracker.model.Message;
+import hu.elte.issuetracker.model.User;
 import hu.elte.issuetracker.repository.IssueRepository;
 import hu.elte.issuetracker.repository.LabelRepository;
 import hu.elte.issuetracker.repository.MessageRepository;
+import hu.elte.issuetracker.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/issues")
@@ -21,27 +27,34 @@ public class IssueController {
     private LabelRepository labelRepository;
     private IssueRepository issueRepository;
     private MessageRepository messageRepository;
+    private UserRepository userRepository;
 
     public IssueController(
             @Autowired IssueRepository issueRepository,
             @Autowired MessageRepository messageRepository,
-            @Autowired LabelRepository labelRepository) {
+            @Autowired LabelRepository labelRepository,
+            @Autowired UserRepository userRepository) {
         this.issueRepository = issueRepository;
         this.messageRepository = messageRepository;
         this.labelRepository = labelRepository;
+        this.userRepository = userRepository;
     }
 
     @GetMapping("")
     public ResponseEntity<Iterable<Issue>> getIssues(@RequestParam(required = false) String place) {
-        Iterable<Issue> issues;
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        List<String> roles = auth.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
 
-        if (place == null) {
-            issues = issueRepository.findAll();
-        } else {
-            issues = issueRepository.findAllByPlaceContains(place);
+        if (roles.contains("ROLE_ADMIN")) {
+            return ResponseEntity.ok(issueRepository.findAll());
         }
 
-        return ResponseEntity.ok(issues);
+        String username = auth.getName();
+        Optional<User> user = userRepository.findByUsername(username);
+        if (user.isPresent()) {
+            return ResponseEntity.ok(user.get().getIssues());
+        }
+        return ResponseEntity.notFound().build();
     }
 
     @GetMapping("/{issueId}")

@@ -31,7 +31,7 @@ public class User {
 
     @Column
     @NotNull
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    // @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     @Column
@@ -39,7 +39,7 @@ public class User {
     private UserRole role;
 
     public enum UserRole {
-        GUEST, USER, ADMIN
+        ROLE_GUEST, ROLE_USER, ROLE_ADMIN
     }
 
     @JsonIgnore

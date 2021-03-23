@@ -1,6 +1,8 @@
 import { wrap } from '@mikro-orm/core';
 import { Router } from 'express';
 import { Issue } from '../entities/issue';
+import { User, UserRole } from '../entities/user';
+import { authorize } from '../security/authorize';
 
 export const issueRouter = Router();
 
@@ -10,7 +12,16 @@ issueRouter
     next();
   })
   .get('', async (req, res) => {
-    const issues = await req.issueRepository!.findAll();
+    let issues: Issue[];
+    if (req.user!.role === UserRole.Admin) {
+      issues = await req.issueRepository!.findAll({ populate: ['user'] });
+    } else {
+      issues = await req.issueRepository!.find({
+        user: {
+          id: req.user!.id,
+        },
+      });
+    }
     res.send(issues);
   })
   .post('', async (req, res) => {
@@ -26,6 +37,8 @@ issueRouter
       }
     }
 
+    issue.user = req.orm.em.getReference(User, req.user!.id);
+
     await req.issueRepository!.persistAndFlush(issue);
 
     res.send(issue);
@@ -39,7 +52,7 @@ issueRouter
     }
     res.send(issue);
   })
-  .delete('/:id', async (req, res) => {
+  .delete('/:id', authorize(UserRole.Admin), async (req, res) => {
     await req.issueRepository!.nativeDelete({
       id: req.params.id,
     });
