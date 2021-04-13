@@ -1,20 +1,16 @@
-import {
-  Collection,
-  Entity,
-  ManyToMany,
-  PrimaryKey,
-  Property,
-} from '@mikro-orm/core';
-import { Issue } from './issue';
+import { Property, Entity, PrimaryKey, Collection, ManyToMany } from "@mikro-orm/core";
+import { Issue } from "./issue";
 
 @Entity()
 export class Label {
+
   @PrimaryKey()
   id!: number;
 
   @Property()
   text!: string;
 
-  @ManyToMany(() => Issue, 'labels')
+  @ManyToMany(() => Issue, issue => issue.labels)
   issues = new Collection<Issue>(this);
+
 }

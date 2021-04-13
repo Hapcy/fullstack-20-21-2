@@ -1,5 +1,13 @@
-import { Collection, Entity, Enum, OneToMany, PrimaryKey, Property } from "@mikro-orm/core";
-import { Issue } from "./issue";
+import {
+  Collection,
+  Entity,
+  Enum,
+  OneToMany,
+  PrimaryKey,
+  Property,
+} from '@mikro-orm/core';
+import { Issue } from './issue';
+import { Message } from './message';
 
 @Entity()
 export class User {
@@ -18,6 +26,8 @@ export class User {
   @OneToMany(() => Issue, issue => issue.user)
   issues = new Collection<Issue>(this);
 
+  @OneToMany(() => Message, message => message.user)
+  messages = new Collection<Message>(this);
 }
 
 export enum UserRole {

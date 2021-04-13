@@ -1,17 +1,11 @@
-import {
-  Collection,
-  Entity,
-  Enum,
-  ManyToMany,
-  ManyToOne,
-  PrimaryKey,
-  Property,
-} from '@mikro-orm/core';
+import { Entity, PrimaryKey, Property, Enum, Collection, ManyToMany, ManyToOne, OneToMany } from '@mikro-orm/core';
 import { Label } from './label';
+import { Message } from './message';
 import { User } from './user';
 
 @Entity()
 export class Issue {
+
   @PrimaryKey()
   id!: number;
 
@@ -25,7 +19,7 @@ export class Issue {
   place!: string;
 
   @Enum()
-  status: IssueStatus = IssueStatus.New;
+  status: IssueStatus = IssueStatus.NEW;
 
   @Property()
   createdAt: Date = new Date();
@@ -39,10 +33,12 @@ export class Issue {
   @ManyToOne(() => User)
   user!: User;
 
+  @OneToMany(() => Message, message => message.issue)
+  messages = new Collection<Message>(this);
 }
 
 export enum IssueStatus {
-  New = 'NEW',
-  Doing = 'DOING',
-  Done = 'DONE',
+  NEW = 'NEW',
+  DOING = 'DOING',
+  DONE = 'DONE',
 }

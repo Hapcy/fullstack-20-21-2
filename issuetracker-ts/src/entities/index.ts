@@ -1,16 +1,17 @@
 import {
-  Configuration,
-  IDatabaseDriver,
   MikroORM,
+  IDatabaseDriver,
+  Configuration,
   Options,
   RequestContext,
 } from '@mikro-orm/core';
 import { RequestHandler } from 'express';
 
+let orm: MikroORM<IDatabaseDriver>;
+
 export function mikroorm(
   config: Options<IDatabaseDriver> | Configuration<IDatabaseDriver>,
 ): RequestHandler {
-  let orm: MikroORM<IDatabaseDriver>;
   return async (req, res, next) => {
     if (!orm) {
       orm = await MikroORM.init(config);
