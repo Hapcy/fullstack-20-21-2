@@ -1,7 +1,8 @@
 jobs:
   include:
 
-  - language: java
+  - stage: test
+    language: java
     jdk: openjdk11
     cache:
       directories:
@@ -12,6 +13,24 @@ jobs:
 
     script: mvn -B test  # mvn clean install is működne
 
+  - stage: test
+    language: node_js
+    node_js: node
+    cache:
+      directories:
+        - node_modules
+    before_install: cd issuetracker-ts
+    after_success: npm build
+
+  - stage: deploy1
+    language: java
+    jdk: openjdk11
+    cache:
+      directories:
+        - $HOME/.m2
+    before_install: cd issuetracker
+    install: true
+    script: skip
     deploy:
       skip_cleanup: true
       provider: heroku
@@ -20,12 +39,11 @@ jobs:
       app: fullstack-20-21-2-java
       on: main
 
-  - language: node_js
+  - stage: deploy2
+    language: node_js
     node_js: node
-    cache:
-      directories:
-        - node_modules
     before_install: cd issuetracker-ts
+    script: skip
     after_success: npm build
     deploy:
       skip_cleanup: true
