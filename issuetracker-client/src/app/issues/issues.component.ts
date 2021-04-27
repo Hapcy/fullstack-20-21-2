@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Issue } from '../domain/issue';
+import { IssueService } from '../issue.service';
 
 @Component({
   selector: 'app-issues',
@@ -7,18 +8,13 @@ import { Issue } from '../domain/issue';
   styleUrls: ['./issues.component.scss'],
 })
 export class IssuesComponent implements OnInit {
-  issues: Issue[] = [
-    {
-      title: 'Rossz projektor',
-      description: 'Nem kapcsol be',
-    },
-    {
-      title: 'Rossz számítógép',
-      description: 'Lorem ipsum dolor sit amet',
-    },
-  ];
+  issues!: Issue[];
 
-  constructor() {}
+  constructor(
+    private issueService: IssueService,
+  ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.issues = this.issueService.getIssues();
+  }
 }
