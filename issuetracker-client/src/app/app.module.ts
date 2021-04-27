@@ -16,7 +16,8 @@ import { MenuComponent } from './menu/menu.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { IssuesComponent } from './issues/issues.component';
 import { IssueEditorComponent } from './issue-editor/issue-editor.component';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
+import { ErrorsPipe } from './errors.pipe';
 
 @NgModule({
   declarations: [
@@ -24,13 +25,14 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     DummyComponent,
     MenuComponent,
     IssuesComponent,
-    IssueEditorComponent
+    IssueEditorComponent,
+    ErrorsPipe
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    FormsModule,
+    ReactiveFormsModule,
     MatToolbarModule,
     MatIconModule,
     MatButtonModule,

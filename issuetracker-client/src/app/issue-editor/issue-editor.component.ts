@@ -1,28 +1,30 @@
 import { Component, OnInit } from '@angular/core';
-import { NgForm } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, NgForm, Validators } from '@angular/forms';
 import { Issue } from '../domain/issue';
 
 @Component({
   selector: 'app-issue-editor',
   templateUrl: './issue-editor.component.html',
-  styleUrls: ['./issue-editor.component.scss']
+  styleUrls: ['./issue-editor.component.scss'],
 })
 export class IssueEditorComponent implements OnInit {
 
-  issue: Issue = {
-    title: '',
-    description: '',
-  };
+  issueForm: FormGroup = this.fb.group({
+    title: ['', [Validators.required, Validators.minLength(2)]],
+    description: [''],
+  });
 
-  constructor() { }
-
-  ngOnInit(): void {
+  get title(): FormControl {
+    return this.issueForm.get('title') as FormControl;
   }
 
-  submit(form: NgForm): void {
-    if (form.valid) {
-      console.log(this.issue);
+  constructor(private fb: FormBuilder) {}
+
+  ngOnInit(): void {}
+
+  submit(): void {
+    if (this.issueForm.valid) {
+      console.log(this.issueForm.value);
     }
   }
-
 }
