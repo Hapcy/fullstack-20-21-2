@@ -1,1 +1,14 @@
-<p>issues works!</p>
+<h1>Issues</h1>
+
+<mat-accordion>
+  <mat-expansion-panel *ngFor="let issue of issues">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        {{ issue.title }}
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <p>{{ issue.description }}</p>
+  </mat-expansion-panel>
+</mat-accordion>
+
+<app-issue-editor></app-issue-editor>

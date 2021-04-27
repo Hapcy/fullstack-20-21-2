@@ -1,0 +1,34 @@
+<h1>Create Issue</h1>
+
+<form #form="ngForm" (ngSubmit)="submit(form)">
+  <mat-form-field class="full-width" appearance="fill">
+    <mat-label>Title</mat-label>
+    <input
+      matInput
+      type="text"
+      name="title"
+      required
+      minlength="2"
+      [(ngModel)]="issue.title"
+      #title="ngModel"
+    />
+    <mat-error *ngIf="title.invalid">
+      <ng-container *ngIf="title.errors!.required">
+        This field is required.
+      </ng-container>
+      <ng-container *ngIf="title.errors!.minlength">
+        Title must be at least
+        {{ title.errors!.minlength.requiredLength }} characters long.
+      </ng-container>
+    </mat-error>
+  </mat-form-field>
+  <mat-form-field class="full-width" appearance="fill">
+    <mat-label>Description</mat-label>
+    <textarea
+      matInput
+      name="description"
+      [(ngModel)]="issue.description"
+    ></textarea>
+  </mat-form-field>
+  <button mat-raised-button color="primary">Submit</button>
+</form>
