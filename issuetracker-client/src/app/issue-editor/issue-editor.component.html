@@ -1,6 +1,6 @@
-<h1>Create Issue</h1>
+<h1 mat-dialog-title>Create Issue</h1>
 
-<form [formGroup]="issueForm" (ngSubmit)="submit()">
+<form mat-dialog-content [formGroup]="issueForm" (ngSubmit)="submit()">
   <mat-form-field class="full-width" appearance="fill">
     <mat-label>Title</mat-label>
     <input
@@ -23,5 +23,17 @@
       formControlName="description"
     ></textarea>
   </mat-form-field>
-  <button mat-raised-button color="primary">Submit</button>
 </form>
+
+<div mat-dialog-actions>
+  <button (click)="submit()" mat-raised-button color="primary">Submit</button>
+  <button
+    *ngIf="dialogRef"
+    (click)="cancel()"
+    mat-raised-button
+    type="button"
+    color="secondary"
+  >
+    Cancel
+  </button>
+</div>

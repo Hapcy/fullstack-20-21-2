@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { IssueService } from '../core/issue.service';
 import { Issue } from '../domain/issue';
-import { IssueService } from '../issue.service';
+import { IssueEditorComponent } from '../issue-editor/issue-editor.component';
 
 @Component({
   selector: 'app-issues',
@@ -12,9 +14,23 @@ export class IssuesComponent implements OnInit {
 
   constructor(
     private issueService: IssueService,
+    private dialog: MatDialog,
   ) {}
 
   ngOnInit(): void {
     this.issues = this.issueService.getIssues();
+  }
+
+  startCreateIssue(): void {
+    this.dialog.open(IssueEditorComponent, {
+      height: '400px',
+    });
+  }
+
+  startEditIssue(issue: Issue): void {
+    this.dialog.open(IssueEditorComponent, {
+      height: '400px',
+      data: issue,
+    });
   }
 }

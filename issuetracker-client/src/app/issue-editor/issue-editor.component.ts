@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, Optional } from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
@@ -7,8 +7,9 @@ import {
   NgForm,
   Validators,
 } from '@angular/forms';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { IssueService } from '../core/issue.service';
 import { Issue } from '../domain/issue';
-import { IssueService } from '../issue.service';
 
 @Component({
   selector: 'app-issue-editor',
@@ -25,14 +26,35 @@ export class IssueEditorComponent implements OnInit {
     return this.issueForm.get('title') as FormControl;
   }
 
-  constructor(private fb: FormBuilder, private issueService: IssueService) {}
+  constructor(
+    private fb: FormBuilder,
+    private issueService: IssueService,
+    @Optional() public dialogRef?: MatDialogRef<IssueEditorComponent>,
+    @Inject(MAT_DIALOG_DATA) @Optional() private issueToEdit?: Issue
+  ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    if (this.issueToEdit) {
+      this.issueForm.reset({
+        title: this.issueToEdit.title,
+        description: this.issueToEdit.description,
+      });
+    }
+  }
 
   submit(): void {
     if (this.issueForm.valid) {
-      this.issueService.createIssue(this.issueForm.value);
-      // then go to issue list
+      if (this.issueToEdit) {
+        this.issueService.editIssue(this.issueToEdit, this.issueForm.value);
+      } else {
+        this.issueService.createIssue(this.issueForm.value);
+      }
+
+      this.dialogRef?.close();
     }
+  }
+
+  cancel(): void {
+    this.dialogRef?.close();
   }
 }
