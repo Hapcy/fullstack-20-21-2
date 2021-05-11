@@ -33,7 +33,7 @@ jobs:
           - google-chrome-stable
     before_install: cd issuetracker-client
     script: npm run test:ci
-	
+
   - stage: deploy1
     language: java
     jdk: openjdk11
