@@ -1,0 +1,12 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.router = void 0;
+var express_1 = require("express");
+var passport_1 = require("../security/passport");
+var issue_controller_1 = require("./issue-controller");
+var label_controller_1 = require("./label-controller");
+var user_controller_1 = require("./user-controller");
+exports.router = express_1.Router();
+exports.router.use('/users', user_controller_1.userRouter);
+exports.router.use('/issues', passport_1.passport.authenticate('jwt', { session: false }), issue_controller_1.issuesRouter);
+exports.router.use('/labels', passport_1.passport.authenticate('jwt', { session: false }), label_controller_1.labelsRouter);
