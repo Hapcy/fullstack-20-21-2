@@ -1,7 +1,7 @@
 <h1>Issues</h1>
 
 <mat-accordion>
-  <mat-expansion-panel *ngFor="let issue of issues">
+  <mat-expansion-panel *ngFor="let issue of (issues | async)">
     <mat-expansion-panel-header>
       <mat-panel-title>
         {{ issue.title }}

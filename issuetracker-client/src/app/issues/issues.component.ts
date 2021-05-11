@@ -10,27 +10,36 @@ import { IssueEditorComponent } from '../issue-editor/issue-editor.component';
   styleUrls: ['./issues.component.scss'],
 })
 export class IssuesComponent implements OnInit {
-  issues!: Issue[];
+  issues!: Promise<Issue[]>;
 
-  constructor(
-    private issueService: IssueService,
-    private dialog: MatDialog,
-  ) {}
+  constructor(private issueService: IssueService, private dialog: MatDialog) {}
 
   ngOnInit(): void {
-    this.issues = this.issueService.getIssues();
+    this.getIssues();
   }
 
-  startCreateIssue(): void {
-    this.dialog.open(IssueEditorComponent, {
+  async startCreateIssue(): Promise<void> {
+    const dialogRef = this.dialog.open(IssueEditorComponent, {
       height: '400px',
     });
+
+    await dialogRef.afterClosed().toPromise();
+
+    this.getIssues();
   }
 
-  startEditIssue(issue: Issue): void {
-    this.dialog.open(IssueEditorComponent, {
+  async startEditIssue(issue: Issue): Promise<void> {
+    const dialogRef = this.dialog.open(IssueEditorComponent, {
       height: '400px',
       data: issue,
     });
+
+    await dialogRef.afterClosed().toPromise();
+
+    this.getIssues();
+  }
+
+  private getIssues(): void {
+    this.issues = this.issueService.getIssues();
   }
 }

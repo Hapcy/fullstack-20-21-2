@@ -20,10 +20,15 @@ export class IssueEditorComponent implements OnInit {
   issueForm: FormGroup = this.fb.group({
     title: ['', [Validators.required, Validators.minLength(2)]],
     description: [''],
+    place: ['', [Validators.required]],
   });
 
   get title(): FormControl {
     return this.issueForm.get('title') as FormControl;
+  }
+
+  get place(): FormControl {
+    return this.issueForm.get('place') as FormControl;
   }
 
   constructor(
@@ -38,16 +43,18 @@ export class IssueEditorComponent implements OnInit {
       this.issueForm.reset({
         title: this.issueToEdit.title,
         description: this.issueToEdit.description,
+        place: this.issueToEdit.place,
       });
     }
   }
 
-  submit(): void {
+  async submit(): Promise<void> {
+    this.issueForm.markAllAsTouched();
     if (this.issueForm.valid) {
       if (this.issueToEdit) {
-        this.issueService.editIssue(this.issueToEdit, this.issueForm.value);
+        await this.issueService.editIssue(this.issueToEdit, this.issueForm.value);
       } else {
-        this.issueService.createIssue(this.issueForm.value);
+        await this.issueService.createIssue(this.issueForm.value);
       }
 
       this.dialogRef?.close();

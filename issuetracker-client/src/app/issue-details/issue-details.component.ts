@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { FormControl, Validators, FormBuilder } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { AuthService } from '../core/auth.service';
 import { IssueService } from '../core/issue.service';
 import { Issue } from '../domain/issue';
 
@@ -9,17 +11,43 @@ import { Issue } from '../domain/issue';
   styleUrls: ['./issue-details.component.scss'],
 })
 export class IssueDetailsComponent implements OnInit {
-  issue: Issue;
+  issue?: Issue;
+
+  message: FormControl = this.fb.control('', Validators.required);
+
+  get isAdmin(): boolean {
+    return this.authService.isAdmin;
+  }
 
   constructor(
     private issueService: IssueService,
-    private route: ActivatedRoute
-  ) {
+    private route: ActivatedRoute,
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private router: Router
+  ) {}
+
+  async ngOnInit(): Promise<void> {
     const issueId = parseInt(
       this.route.snapshot.paramMap.get('issueId') as string
     );
-    this.issue = this.issueService.getIssue(issueId);
+    this.issue = await this.issueService.getIssue(issueId);
   }
 
-  ngOnInit(): void {}
+  async addMessage(): Promise<void> {
+    if (this.message.invalid) {
+      return;
+    }
+    const createdMessage = await this.issueService.addMessage(
+      this.issue as Issue,
+      this.message.value
+    );
+    (this.issue as Issue).messages.push(createdMessage);
+    this.message.reset('');
+  }
+
+  async deleteIssue(): Promise<void> {
+    await this.issueService.deleteIssue(this.issue as Issue);
+    this.router.navigate(['/', 'issues']);
+  }
 }

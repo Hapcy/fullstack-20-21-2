@@ -1,11 +1,31 @@
-<h1>{{ issue.title }}<!-- - {{ issue.user }}--></h1>
-<h2>Description</h2>
-<p>{{ issue.description }}</p>
-<h2>Messages</h2>
-<!-- <ng-container *ngIf="issue.messages && issue.messages.length !== 0">
-  <div *ngFor="let message of issue.messages">
-    <div>{{ message.user }}</div>
-    <p>{{ message.text }}</p>
-  </div>
+<ng-container *ngIf="issue">
+  <h1>{{ issue!.title }} - {{ issue!.user.username }}</h1>
+  <h2>Description</h2>
+  <p>{{ issue!.description }}</p>
+  <h2>Messages</h2>
+  <ng-container *ngIf="issue!.messages && issue!.messages.length !== 0">
+    <div *ngFor="let message of issue!.messages">
+      <div>{{ message.user.username }}</div>
+      <p>{{ message.text }}</p>
+    </div>
+  </ng-container>
+  <p *ngIf="!issue!.messages || issue!.messages.length === 0">
+    No messages yet.
+  </p>
+  <form (submit)="$event.preventDefault(); addMessage()">
+    <mat-form-field appearance="fill">
+      <mat-label>Message</mat-label>
+      <textarea
+        required
+        matInput
+        name="message"
+        [formControl]="message"
+      ></textarea>
+      <mat-error *ngIf="message.invalid">This field is required.</mat-error>
+    </mat-form-field>
+    <button mat-raised-button color="primary">Send message</button>
+  </form>
+  <button mat-raised-button color="error" (click)="deleteIssue()">
+    Delete Issue
+  </button>
 </ng-container>
-<p *ngIf="!issue.messages || issue.messages.length === 0">No messages yet.</p> -->
